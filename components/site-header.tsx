@@ -1,14 +1,18 @@
 import Link from "next/link";
 
-export default function SiteHeader() {
+interface SiteHeaderProps {
+  logo?: string | null;
+}
+
+export default function SiteHeader({ logo }: SiteHeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         
-        {/* TOP LEFT: LOGO + STUDIO NAME */}
+        {/* TOP LEFT: LOGO IMAGE + STUDIO NAME */}
         <Link href="/" className="flex items-center gap-3 group">
           <img 
-            src="/logo.webp" 
+            src={logo || "/logo.webp"} 
             alt="Classic Family Photography Logo" 
             className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
           />
