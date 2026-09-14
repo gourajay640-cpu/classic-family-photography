@@ -1,0 +1,3 @@
+import { db } from './db';
+export function minutes(t:string){const [h,m]=t.split(':').map(Number);return h*60+m}
+export async function hasConflict(date:Date,start:string,end:string,teamIds:string[]=[] ,excludeId?:string){const dayStart=new Date(date); dayStart.setHours(0,0,0,0); const dayEnd=new Date(dayStart); dayEnd.setDate(dayEnd.getDate()+1); const bookings=await db.booking.findMany({where:{eventDate:{gte:dayStart,lt:dayEnd},status:{not:'CANCELLED'},...(excludeId?{id:{not:excludeId}}:{})},include:{team:true}}); return bookings.some(b=>minutes(start)<minutes(b.endTime)&&minutes(end)>minutes(b.startTime)&&(teamIds.length===0||b.team.some(x=>teamIds.includes(x.teamMemberId))));}

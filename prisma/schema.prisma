@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BookingStatus {
+  NEW
+  CONTACTED
+  PENDING
+  CONFIRMED
+  RESCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
+enum EventType {
+  WEDDING
+  PRE_WEDDING
+  MODELLING
+  ENGAGEMENT
+  RECEPTION
+  BIRTHDAY
+  EVENT
+  OTHER
+}
+
+enum TeamRole {
+  PHOTOGRAPHER
+  VIDEOGRAPHER
+  CINEMATOGRAPHER
+  EDITOR
+  ASSISTANT
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  BLOCKED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+model Client {
+  id        String    @id @default(cuid())
+  name      String
+  phone     String
+  email     String
+  createdAt DateTime  @default(now())
+  bookings  Booking[]
+  notes     String?
+}
+
+model Package {
+  id          String    @id @default(cuid())
+  name        String
+  price       Int
+  description String?
+  features    String[]
+  imageUrl    String?
+  active      Boolean   @default(true)
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+}
+
+model Booking {
+  id           String        @id @default(cuid())
+  bookingCode  String        @unique
+  clientId     String
+  packageId    String?
+  eventType    EventType
+  eventDate    DateTime
+  startTime    String
+  endTime      String
+  location     String
+  people       Int           @default(1)
+  functions    Int           @default(1)
+  requirements String?
+  budget       Int?
+  message      String?
+  status       BookingStatus  @default(NEW)
+  paymentStatus PaymentStatus @default(UNPAID)
+  totalAmount  Int           @default(0)
+  paidAmount   Int           @default(0)
+  notes        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  client       Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  package      Package?       @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  team         BookingTeam[]
+  payments     Payment[]
+
+  @@index([eventDate])
+  @@index([status])
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  bookingId String
+  amount    Int
+  paidAt    DateTime @default(now())
+  note      String?
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model TeamMember {
+  id        String        @id @default(cuid())
+  name      String
+  role      TeamRole
+  phone     String?
+  photoUrl  String?
+  active    Boolean       @default(true)
+  team      BookingTeam[]
+}
+
+model BookingTeam {
+  bookingId    String
+  teamMemberId String
+  booking      Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@id([bookingId, teamMemberId])
+}
+
+model Gallery {
+  id     String         @id @default(cuid())
+  name   String
+  images GalleryImage[]
+}
+
+model GalleryImage {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String
+  url         String
+  featured    Boolean  @default(false)
+  galleryId   String?
+  gallery     Gallery? @relation(fields: [galleryId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  clientName String
+  review     String
+  rating     Int      @default(5)
+  photoUrl   String?
+  createdAt  DateTime @default(now())
+}
+
+model Availability {
+  id        String             @id @default(cuid())
+  date      DateTime
+  startTime String
+  endTime   String
+  status    AvailabilityStatus @default(AVAILABLE)
+  note      String?
+
+  @@index([date])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model StudioSettings {
+  id           String   @id @default("default")
+  studioName   String   @default("Classic Family Photography")
+  logoUrl      String?
+  phone        String?
+  whatsapp     String?
+  email        String?
+  address      String?
+  instagram    String?
+  facebook     String?
+  youtube      String?
+  mapsUrl      String?
+  workingHours String?
+  updatedAt    DateTime @updatedAt
+}

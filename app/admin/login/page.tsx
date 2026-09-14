@@ -1,0 +1,16 @@
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { LockKeyhole, ArrowRight } from 'lucide-react';
+
+export default function Login(){
+  const [email,setEmail]=useState('admin@classicfamilyphotography.com');
+  const [password,setPassword]=useState('admin123');
+  const [err,setErr]=useState('');
+  const router=useRouter();
+  async function go(e:any){e.preventDefault();setErr('');const x=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});if(x.ok)router.push('/admin');else setErr((await x.json()).error||'Unable to sign in');}
+  return <main style={{minHeight:'100vh',background:'var(--dark)',color:'#fff',display:'grid',gridTemplateColumns:'1.2fr .8fr'}}>
+    <div style={{position:'relative',display:'flex',alignItems:'end',padding:'7vw',overflow:'hidden'}}><img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=88" alt="Wedding" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',opacity:.65}}/><div style={{position:'absolute',inset:0,background:'linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.84))'}}/><div style={{position:'relative',zIndex:2}}><div className="eyebrow" style={{color:'#d1b48a'}}>Studio portal</div><h1 className="serif" style={{fontSize:'clamp(3.5rem,7vw,7rem)',fontWeight:400,lineHeight:.92,margin:'16px 0'}}>The work<br />behind the work.</h1><p style={{maxWidth:470,color:'rgba(255,255,255,.68)',lineHeight:1.7}}>Manage bookings, availability, clients, payments and portfolio content from one calm, simple workspace.</p></div></div>
+    <div style={{background:'#f4f0e8',color:'var(--ink)',display:'flex',alignItems:'center',padding:'8vw'}}><form onSubmit={go} style={{width:'100%',maxWidth:430}}><div className="eyebrow">Classic Family Photography</div><h2 className="serif" style={{fontWeight:400,fontSize:'3.4rem',lineHeight:.95,margin:'12px 0 36px'}}>Welcome back.</h2><label style={{display:'grid',gap:7,marginBottom:20}}><span style={{fontSize:'.67rem',letterSpacing:'.16em',textTransform:'uppercase'}}>Email</span><input value={email} onChange={e=>setEmail(e.target.value)} type="email" required style={{padding:'14px 0',border:0,borderBottom:'1px solid var(--line)',background:'transparent',outline:'none'}} /></label><label style={{display:'grid',gap:7}}><span style={{fontSize:'.67rem',letterSpacing:'.16em',textTransform:'uppercase'}}>Password</span><input value={password} onChange={e=>setPassword(e.target.value)} type="password" required style={{padding:'14px 0',border:0,borderBottom:'1px solid var(--line)',background:'transparent',outline:'none'}} /></label>{err&&<p style={{color:'#9f2f2f',marginTop:14}}>{err}</p>}<button style={{marginTop:28,width:'100%',padding:'15px 18px',background:'var(--ink)',color:'#fff',border:0,display:'flex',alignItems:'center',justifyContent:'center',gap:10,textTransform:'uppercase',letterSpacing:'.13em',fontSize:'.68rem'}}>Sign in <ArrowRight size={15}/></button><p style={{marginTop:16,color:'var(--muted)',fontSize:'.75rem',display:'flex',alignItems:'center',gap:7}}><LockKeyhole size={14}/> Demo login is prefilled for local development.</p></form></div>
+  </main>
+}
