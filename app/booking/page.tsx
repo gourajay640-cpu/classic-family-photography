@@ -19,7 +19,13 @@ export default function Booking() {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
 
-    // Fallback preferred times so backend validation doesn't fail
+    // If packageId is empty or "CUSTOM", delete it so backend treats it as null/optional
+    const packageVal = f.get('packageId');
+    if (!packageVal || packageVal === 'CUSTOM') {
+      f.delete('packageId');
+    }
+
+    // Set fallback start and end time if not filled
     const pStart = f.get('preferredStartTime') || '09:00';
     const pEnd = f.get('preferredEndTime') || '18:00';
     f.set('startTime', pStart.toString());
@@ -29,7 +35,7 @@ export default function Booking() {
     const j = await r.json();
 
     if (!r.ok) {
-      setMsg(j.error || 'Unable to submit');
+      setMsg(j.error || 'Unable to submit enquiry');
       return;
     }
     setDone(j);
@@ -130,7 +136,7 @@ export default function Booking() {
                   <label style={{ display: 'grid', gap: 8 }}>
                     <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>Package</span>
                     <select name="packageId" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }}>
-                      <option value="">Custom / Contact</option>
+                      <option value="CUSTOM">Custom / Contact</option>
                       {packages.map((p) => (
                         <option value={p.id} key={p.id}>
                           {p.name} — ₹{Number(p.price).toLocaleString('en-IN')}
@@ -148,12 +154,12 @@ export default function Booking() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
                   <label style={{ display: 'grid', gap: 8 }}>
                     <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start time</span>
-                    <input required name="preferredStartTime" type="time" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
+                    <input name="preferredStartTime" type="time" defaultValue="09:00" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
                   </label>
 
                   <label style={{ display: 'grid', gap: 8 }}>
                     <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>End time</span>
-                    <input required name="preferredEndTime" type="time" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
+                    <input name="preferredEndTime" type="time" defaultValue="18:00" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
                   </label>
                 </div>
 
