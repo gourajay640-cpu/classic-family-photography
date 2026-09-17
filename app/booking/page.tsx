@@ -19,7 +19,7 @@ export default function Booking() {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
 
-    // Fallback values so backend API doesn't throw validation errors
+    // Fallback preferred times so backend validation doesn't fail
     const pStart = f.get('preferredStartTime') || '09:00';
     const pEnd = f.get('preferredEndTime') || '18:00';
     f.set('startTime', pStart.toString());
@@ -164,7 +164,7 @@ export default function Booking() {
 
                 {msg && <p style={{ color: '#9f2f2f', margin: 0 }}>{msg}</p>}
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', justify: 'space-between', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
                   <span className="muted" style={{ fontSize: '.78rem' }}>No payment is taken at this stage.</span>
                   <button className="btn-premium" style={{ background: 'var(--ink)', color: '#fff', borderColor: 'var(--ink)' }}>
                     Send enquiry <ArrowRight size={15} />
