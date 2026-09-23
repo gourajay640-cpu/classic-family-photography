@@ -6,7 +6,7 @@ const data = [
   ['Ring Ceremony', 'Weddings', '/ring ceremony.jpg'],
   ['Model Portfolio', 'Modelling', 'https://www.instagram.com/classic_family_photography/p/CdQgDPbFBF1/?utm_source=ig_web_copy_link'],
   ['Bride & Groom Portrait', 'Weddings', 'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1100&q=88'],
-  ['Pre-Wedding Couple Shoot', 'Pre-Wedding', 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=1100&q=88'],
+  ['Pre-Wedding Couple Shoot', 'Pre-Wedding', 'https://www.instagram.com/classic_family_photography/p/DQemk17DOHr/?utm_source=ig_web_copy_link'],
   ['Cinematic Wedding', 'Cinematography', 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1100&q=88'],
   ['Reception', 'Events', 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1100&q=88'],
   ['Haldi', 'Weddings', 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1100&q=88'],
