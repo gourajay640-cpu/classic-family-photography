@@ -1,1 +1,33 @@
-import {NextResponse} from 'next/server'; import {db} from '@/lib/db'; import bcrypt from 'bcryptjs'; import {signToken} from '@/lib/auth'; export async function POST(req:Request){const {email,password}=await req.json();const u=await db.user.findUnique({where:{email}});if(!u||!(await bcrypt.compare(password,u.passwordHash)))return NextResponse.json({error:'Invalid credentials'},{status:401});const r=NextResponse.json({ok:true});r.cookies.set('cfp_admin',signToken(u.id),{httpOnly:true,sameSite:'lax',secure:process.env.NODE_ENV==='production',path:'/',maxAge:60*60*24*7});return r}
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+
+const prisma = new PrismaClient();
+
+export async function POST(req: Request) {
+  try {
+    const { email, password } = await req.json();
+
+    if (!email || !password) {
+      return NextResponse.json({ error: 'Email and password required' }, { status: 400 });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user || !user.passwordHash) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
+
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
+
+    // Set simple auth cookie or return success
+    const res = NextResponse.json({ success: true, user: { email: user.email, name: user.name } });
+    res.cookies.set('admin_token', 'logged_in', { httpOnly: true, path: '/' });
+    return res;
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
+  }
+}
