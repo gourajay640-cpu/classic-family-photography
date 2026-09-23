@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { LockKeyhole, ArrowRight } from 'lucide-react';
 
 export default function Login(){
-  const [email,setEmail]=useState('classic9617@gmail.com');
-  const [password,setPassword]=useState('System@6982');
+  const [email, setEmail] = useState('classic9617@gmail.com');
+const [password, setPassword] = useState('System@6982');
   const [err,setErr]=useState('');
   const router=useRouter();
   async function go(e:any){e.preventDefault();setErr('');const x=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});if(x.ok)router.push('/admin');else setErr((await x.json()).error||'Unable to sign in');}
