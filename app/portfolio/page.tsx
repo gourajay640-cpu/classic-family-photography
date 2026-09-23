@@ -2,15 +2,15 @@
 import { useState } from 'react';
 import { X, ArrowUpRight } from 'lucide-react';
 
+// Purane links hata kar apni sabhi images yahan add karein:
 const data = [
-  ['Ring Ceremony', 'Weddings', '/ring ceremony.jpg'],
-  ['Model Portfolio', 'Modelling', 'https://www.instagram.com/classic_family_photography/p/CdQgDPbFBF1/?utm_source=ig_web_copy_link'],
-  ['Bride & Groom Portrait', 'Weddings', 'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=1100&q=88'],
-  ['Pre-Wedding Couple Shoot', 'Pre-Wedding', 'https://www.instagram.com/classic_family_photography/p/DQemk17DOHr/?utm_source=ig_web_copy_link'],
-  ['Cinematic Wedding', 'Cinematography', 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1100&q=88'],
-  ['Reception', 'Events', 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1100&q=88'],
-  ['Haldi', 'Weddings', 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1100&q=88'],
-  ['Couple Session', 'Couple', 'https://images.unsplash.com/photo-1494386346843-e12284507169?auto=format&fit=crop&w=1100&q=88'],
+  ['Ring Ceremony', 'Weddings', '/ring-ceremony.jpg'],
+  ['Pre Wedding Shoot', 'Pre-Wedding', '/pre-wedding-1.jpg'],
+  ['Cinematic Shoot', 'Cinematography', '/cinematic-1.jpg'],
+  ['Haldi Function', 'Weddings', '/haldi-1.jpg'],
+  ['Couple Shoot', 'Couple', '/couple-1.jpg'],
+  ['Reception Party', 'Events', '/reception-1.jpg'],
+  ['Model Portrait', 'Modelling', '/modeling-1.jpg'],
 ];
 
 export default function Portfolio() {
