@@ -2,15 +2,114 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Eye, EyeOff, Lock, ArrowRight } from "lucide-react";
 
-export default function AdminDashboard() {
+export default function AdminPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState("classic9617@gmail.com");
+  const [password, setPassword] = useState("System@6982");
+  const [showPassword, setShowPassword] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Direct access on click without blocking authentication
+    setIsLoggedIn(true);
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#fcfbf9] text-[#1a1a1a]">
+        {/* Left Studio Banner */}
+        <div className="relative bg-[#111] text-white p-10 md:p-16 flex flex-col justify-between min-h-[320px] lg:min-h-screen">
+          <div className="text-xs tracking-[0.2em] uppercase opacity-80 font-medium">
+            Studio Portal
+          </div>
+          <div className="my-auto py-12">
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal leading-tight">
+              The work<br />behind the<br />work.
+            </h1>
+            <p className="mt-5 text-gray-400 max-w-sm text-sm sm:text-base leading-relaxed">
+              Manage bookings, availability, clients, payments and portfolio content from one calm, simple workspace.
+            </p>
+          </div>
+          <div className="text-xs opacity-50 font-medium tracking-wider">
+            Classic Family Photography
+          </div>
+        </div>
+
+        {/* Right Integrated Login Form */}
+        <div className="flex items-center justify-center p-8 sm:p-12 lg:p-16">
+          <div className="w-full max-w-md space-y-8">
+            <div>
+              <span className="text-xs tracking-[0.2em] uppercase text-[#c5a880] font-semibold block">
+                Classic Family Photography
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl font-normal mt-2 text-[#111]">
+                Welcome back.
+              </h2>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block">
+                  EMAIL
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full border-b border-black/20 bg-transparent py-2.5 text-sm text-black outline-none focus:border-black transition-colors"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block">
+                  PASSWORD
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full border-b border-black/20 bg-transparent py-2.5 pr-10 text-sm text-black outline-none focus:border-black transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-0 text-black/50 hover:text-black p-1 transition-colors"
+                    title={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-[#181818] text-white py-3.5 px-6 rounded-none font-medium text-xs tracking-wider uppercase hover:bg-black transition-all flex items-center justify-center gap-2 mt-4"
+              >
+                SIGN IN <ArrowRight size={15} />
+              </button>
+
+              <div className="flex items-center gap-2 text-xs text-black/50 pt-2">
+                <Lock size={12} />
+                <span>Demo login prefilled for quick studio preview.</span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Dashboard View after Sign In click
   return (
     <main className="min-h-screen bg-[#f5f2eb] pt-32 pb-16 px-6 md:px-12 text-[#1a1a1a]">
       <div className="max-w-7xl mx-auto space-y-10">
-        
-        {/* Title */}
+        {/* Title & Logout Toggle */}
         <div className="flex justify-between items-end border-b border-black/10 pb-6">
           <div>
             <span className="text-xs uppercase tracking-widest text-black/60 font-medium">
@@ -20,12 +119,20 @@ export default function AdminDashboard() {
               Dashboard
             </h1>
           </div>
-          <Link 
-            href="/booking" 
-            className="hidden sm:inline-block text-sm bg-black text-white px-5 py-2.5 rounded-full hover:bg-black/80 transition-all"
-          >
-            + New Booking
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link 
+              href="/booking" 
+              className="hidden sm:inline-block text-xs uppercase tracking-wider bg-black text-white px-5 py-2.5 rounded-full hover:bg-black/80 transition-all font-medium"
+            >
+              + New Booking
+            </Link>
+            <button
+              onClick={() => setIsLoggedIn(false)}
+              className="text-xs uppercase tracking-wider border border-black/20 px-4 py-2.5 rounded-full hover:bg-black hover:text-white transition-all font-medium"
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
 
         {/* Stats Row */}
@@ -158,7 +265,6 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
-
       </div>
     </main>
   );
