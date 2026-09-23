@@ -4,13 +4,13 @@ import bcrypt from 'bcryptjs';
 const p = new PrismaClient();
 
 async function main() {
-  const hash = await bcrypt.hash('admin123', 12);
+  const hash = await bcrypt.hash('System@6982', 12);
   
   await p.user.upsert({
-    where: { email: 'admin@classicfamilyphotography.com' },
+    where: { email: 'classic9617@gmail.com' },
     update: {},
     create: {
-      email: 'admin@classicfamilyphotography.com',
+      email: 'classic9617@gmail.com',
       name: 'Studio Admin',
       passwordHash: hash,
     },
