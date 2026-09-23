@@ -170,7 +170,7 @@ export default function Booking() {
 
                 {msg && <p style={{ color: '#9f2f2f', margin: 0 }}>{msg}</p>}
 
-                <div style={{ display: 'flex', justify: 'space-between', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
                   <span className="muted" style={{ fontSize: '.78rem' }}>No payment is taken at this stage.</span>
                   <button className="btn-premium" style={{ background: 'var(--ink)', color: '#fff', borderColor: 'var(--ink)' }}>
                     Send enquiry <ArrowRight size={15} />
