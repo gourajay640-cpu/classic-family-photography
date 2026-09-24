@@ -13,6 +13,12 @@
     "predev": "prisma generate",
     "prebuild": "prisma generate"
   },
+  "allowScripts": {
+    "@prisma/client": true,
+    "@prisma/engines": true,
+    "prisma": true,
+    "esbuild": true
+  },
   "dependencies": {
     "@prisma/client": "^6.15.0",
     "@tailwindcss/postcss": "^4.3.3",
