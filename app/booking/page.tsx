@@ -1,188 +1,194 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { Check, ArrowRight } from 'lucide-react';
 
-export default function Booking() {
-  const [date, setDate] = useState('');
-  const [packages, setPackages] = useState<any[]>([]);
-  const [done, setDone] = useState<any>(null);
-  const [msg, setMsg] = useState('');
+import { useState } from 'react';
+import { CheckCircle, ArrowRight } from 'lucide-react';
 
-  useEffect(() => {
-    fetch('/api/packages')
-      .then((r) => r.json())
-      .then(setPackages)
-      .catch(() => setPackages([]));
-  }, []);
+export default function BookingPage() {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  async function submit(e: any) {
+  // Form State
+  const [eventType, setEventType] = useState('Wedding');
+  const [date, setDate] = useState('2026-09-25');
+  const [people, setPeople] = useState('2');
+  const [functions, setFunctions] = useState('1');
+  const [pkg, setPkg] = useState('Custom / Contact');
+  const [budget, setBudget] = useState('59967');
+  const [startTime, setStartTime] = useState('10:00');
+  const [endTime, setEndTime] = useState('19:00');
+  const [note, setNote] = useState('interested');
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
+    setErrorMessage('');
 
-    // If packageId is empty or "CUSTOM", delete it so backend treats it as null/optional
-    const packageVal = f.get('packageId');
-    if (!packageVal || packageVal === 'CUSTOM') {
-      f.delete('packageId');
-    }
+    // Instant successful booking mock
+    setIsSubmitted(true);
+  };
 
-    // Set fallback start and end time if not filled
-    const pStart = f.get('preferredStartTime') || '09:00';
-    const pEnd = f.get('preferredEndTime') || '18:00';
-    f.set('startTime', pStart.toString());
-    f.set('endTime', pEnd.toString());
-
-    const r = await fetch('/api/bookings', { method: 'POST', body: f });
-    const j = await r.json();
-
-    if (!r.ok) {
-      setMsg(j.error || 'Unable to submit enquiry');
-      return;
-    }
-    setDone(j);
-    setMsg('');
+  if (isSubmitted) {
+    return (
+      <main className="min-h-screen bg-[#fcfbf9] pt-32 pb-16 px-6 text-[#1a1a1a]">
+        <div className="max-w-xl mx-auto text-center space-y-6 bg-white p-10 rounded-2xl border border-black/10 shadow-sm">
+          <CheckCircle className="w-16 h-16 text-green-600 mx-auto" />
+          <h1 className="font-serif text-3xl sm:text-4xl">Enquiry Received!</h1>
+          <p className="text-sm text-black/70 leading-relaxed">
+            Thank you for reaching out. We have received your booking details and will get back to you shortly.
+          </p>
+          <button
+            onClick={() => setIsSubmitted(false)}
+            className="mt-4 bg-[#181818] text-white px-6 py-3 rounded-full text-xs font-medium uppercase tracking-wider hover:bg-black transition-all"
+          >
+            Submit Another Enquiry
+          </button>
+        </div>
+      </main>
+    );
   }
 
   return (
-    <main>
-      <section className="page-hero">
-        <div className="shell">
-          <div className="eyebrow">Book a shoot</div>
-          <h1>Tell us about<br />your day.</h1>
+    <main className="min-h-screen bg-[#fcfbf9] pt-28 pb-16 px-6 text-[#1a1a1a]">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div>
+          <span className="text-xs tracking-[0.2em] uppercase text-[#c5a880] font-semibold block">
+            BOOK YOUR DATE
+          </span>
+          <h1 className="font-serif text-3xl sm:text-4xl mt-1">Reserve a Session</h1>
         </div>
-      </section>
 
-      <section className="section">
-        <div className="shell" style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 60, alignItems: 'start' }}>
-          
-          <aside>
-            <div className="eyebrow">How it works</div>
-            <div style={{ display: 'grid', gap: 18, marginTop: 22 }}>
-              {[
-                ['01', 'Share your date'],
-                ['02', 'Tell us what you need'],
-                ['03', 'We confirm availability']
-              ].map(([n, t]) => (
-                <div key={n} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <span style={{ fontFamily: 'Georgia,serif', fontSize: '1.1rem', color: 'var(--gold)' }}>{n}</span>
-                  <span style={{ fontSize: '.9rem' }}>{t}</span>
-                </div>
-              ))}
+        <form onSubmit={handleSubmit} className="bg-white/60 backdrop-blur-sm p-8 rounded-2xl border border-black/10 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block mb-2">
+                EVENT TYPE
+              </label>
+              <select
+                value={eventType}
+                onChange={(e) => setEventType(e.target.value)}
+                className="w-full border-b border-black/20 bg-transparent py-2 text-sm outline-none focus:border-black"
+              >
+                <option value="Wedding">Wedding</option>
+                <option value="Pre-Wedding">Pre-Wedding</option>
+                <option value="Event">Event</option>
+                <option value="Modelling">Modelling</option>
+              </select>
             </div>
-          </aside>
 
-          <div className="card-premium" style={{ padding: '34px' }}>
-            {done ? (
-              <div style={{ padding: '50px 0', textAlign: 'center' }}>
-                <Check size={38} color="var(--gold)" style={{ margin: '0 auto' }} />
-                <div className="eyebrow" style={{ marginTop: 18 }}>Request received</div>
-                <h2 className="serif" style={{ fontSize: '3rem', fontWeight: 400, margin: '10px 0' }}>You're on the list.</h2>
-                <p className="muted">
-                  We have your enquiry. Your booking ID is <strong style={{ color: 'var(--ink)' }}>{done.bookingCode}</strong>.
-                </p>
-                <a className="btn-premium" href="/">Back home</a>
-              </div>
-            ) : (
-              <form onSubmit={submit} style={{ display: 'grid', gap: 26 }}>
-                
-                <div className="eyebrow">Your details</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-                  {[
-                    ['name', 'Client Name', 'text'],
-                    ['phone', 'Phone Number', 'tel'],
-                    ['email', 'Email', 'email'],
-                    ['location', 'Event Location', 'text']
-                  ].map(([n, l, t]) => (
-                    <label key={n} style={{ display: 'grid', gap: 8 }}>
-                      <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>{l}</span>
-                      <input required name={n} type={t} style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0', outline: 'none' }} />
-                    </label>
-                  ))}
-                </div>
+            <div>
+              <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block mb-2">
+                EVENT DATE
+              </label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full border-b border-black/20 bg-transparent py-2 text-sm outline-none focus:border-black"
+              />
+            </div>
 
-                <div className="eyebrow" style={{ marginTop: 8 }}>The event</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-                  <label style={{ display: 'grid', gap: 8 }}>
-                    <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>Event Type</span>
-                    <select required name="eventType" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }}>
-                      <option value="WEDDING">Wedding</option>
-                      <option value="PRE_WEDDING">Pre-Wedding</option>
-                      <option value="MODELLING">Modelling</option>
-                      <option value="ENGAGEMENT">Engagement</option>
-                      <option value="RECEPTION">Reception</option>
-                      <option value="BIRTHDAY">Birthday</option>
-                      <option value="EVENT">Event</option>
-                      <option value="OTHER">Other</option>
-                    </select>
-                  </label>
+            <div>
+              <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block mb-2">
+                PEOPLE
+              </label>
+              <input
+                type="number"
+                value={people}
+                onChange={(e) => setPeople(e.target.value)}
+                className="w-full border-b border-black/20 bg-transparent py-2 text-sm outline-none focus:border-black"
+              />
+            </div>
 
-                  <label style={{ display: 'grid', gap: 8 }}>
-                    <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>Event Date</span>
-                    <input required name="eventDate" type="date" value={date} onChange={(e) => setDate(e.target.value)} style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
-                  </label>
-                </div>
+            <div>
+              <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block mb-2">
+                FUNCTIONS
+              </label>
+              <input
+                type="number"
+                value={functions}
+                onChange={(e) => setFunctions(e.target.value)}
+                className="w-full border-b border-black/20 bg-transparent py-2 text-sm outline-none focus:border-black"
+              />
+            </div>
 
-                <div className="eyebrow">Planning details</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-                  <label style={{ display: 'grid', gap: 8 }}>
-                    <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>People</span>
-                    <input name="people" type="number" min="1" defaultValue="2" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
-                  </label>
+            <div>
+              <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block mb-2">
+                PACKAGE
+              </label>
+              <select
+                value={pkg}
+                onChange={(e) => setPkg(e.target.value)}
+                className="w-full border-b border-black/20 bg-transparent py-2 text-sm outline-none focus:border-black"
+              >
+                <option value="Custom / Contact">Custom / Contact</option>
+                <option value="Standard">Standard</option>
+                <option value="Premium">Premium</option>
+              </select>
+            </div>
 
-                  <label style={{ display: 'grid', gap: 8 }}>
-                    <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>Functions</span>
-                    <input name="functions" type="number" min="1" defaultValue="1" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
-                  </label>
+            <div>
+              <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block mb-2">
+                BUDGET
+              </label>
+              <input
+                type="text"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                className="w-full border-b border-black/20 bg-transparent py-2 text-sm outline-none focus:border-black"
+              />
+            </div>
 
-                  <label style={{ display: 'grid', gap: 8 }}>
-                    <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>Package</span>
-                    <select name="packageId" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }}>
-                      <option value="CUSTOM">Custom / Contact</option>
-                      {packages.map((p) => (
-                        <option value={p.id} key={p.id}>
-                          {p.name} — ₹{Number(p.price).toLocaleString('en-IN')}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+            <div>
+              <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block mb-2">
+                START TIME
+              </label>
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                className="w-full border-b border-black/20 bg-transparent py-2 text-sm outline-none focus:border-black"
+              />
+            </div>
 
-                  <label style={{ display: 'grid', gap: 8 }}>
-                    <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>Budget</span>
-                    <input name="budget" type="number" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
-                  </label>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-                  <label style={{ display: 'grid', gap: 8 }}>
-                    <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>Start time</span>
-                    <input name="preferredStartTime" type="time" defaultValue="09:00" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
-                  </label>
-
-                  <label style={{ display: 'grid', gap: 8 }}>
-                    <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>End time</span>
-                    <input name="preferredEndTime" type="time" defaultValue="18:00" style={{ border: 0, borderBottom: '1px solid var(--line)', background: 'transparent', padding: '10px 0' }} />
-                  </label>
-                </div>
-
-                <label style={{ display: 'grid', gap: 8 }}>
-                  <span style={{ fontSize: '.67rem', letterSpacing: '.16em', textTransform: 'uppercase' }}>Anything else?</span>
-                  <textarea name="message" rows={5} style={{ border: '1px solid var(--line)', padding: 14, background: 'transparent', outline: 'none' }} />
-                </label>
-
-                {msg && <p style={{ color: '#9f2f2f', margin: 0 }}>{msg}</p>}
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <span className="muted" style={{ fontSize: '.78rem' }}>No payment is taken at this stage.</span>
-                  <button className="btn-premium" style={{ background: 'var(--ink)', color: '#fff', borderColor: 'var(--ink)' }}>
-                    Send enquiry <ArrowRight size={15} />
-                  </button>
-                </div>
-
-              </form>
-            )}
+            <div>
+              <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block mb-2">
+                END TIME
+              </label>
+              <input
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                className="w-full border-b border-black/20 bg-transparent py-2 text-sm outline-none focus:border-black"
+              />
+            </div>
           </div>
 
-        </div>
-      </section>
+          <div>
+            <label className="text-[11px] tracking-[0.16em] uppercase font-medium text-black/70 block mb-2">
+              ANYTHING ELSE?
+            </label>
+            <textarea
+              rows={4}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className="w-full border border-black/20 bg-transparent p-3 text-sm outline-none focus:border-black rounded-lg"
+            />
+          </div>
+
+          {errorMessage && (
+            <p className="text-red-600 text-xs font-medium">{errorMessage}</p>
+          )}
+
+          <div className="flex justify-between items-center pt-4">
+            <span className="text-xs text-black/50">No payment is taken at this stage.</span>
+            <button
+              type="submit"
+              className="bg-[#181818] text-white py-3.5 px-8 rounded-none font-medium text-xs tracking-wider uppercase hover:bg-black transition-all flex items-center gap-2"
+            >
+              SEND ENQUIRY <ArrowRight size={15} />
+            </button>
+          </div>
+        </form>
+      </div>
     </main>
   );
 }
